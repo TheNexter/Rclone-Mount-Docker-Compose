@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  rcloneu5:
+    container_name: rclonemount
+    image: rclone/rclone
+    user: 1000:1000
+    devices:
+      - /dev/fuse
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /etc/group:/etc/group:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /home/ubuntu/.config/rclone:/config/rclone
+      - type: bind
+        source: /home/ubuntu/Remote/myremote
+        target: /data
+        bind:
+          propagation: rshared
+    restart: unless-stopped
+    command: mount DriveBackupU5:/Plex /data --allow-other --allow-non-empty
